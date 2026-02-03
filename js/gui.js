@@ -27,7 +27,7 @@ var MirrorRanks = [
 var viewportWidth = window.innerWidth || document.documentElement.clientWidth || 600;
 var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
 var viewportMin = Math.min(viewportWidth, viewportHeight);
-var BOARD_MARGIN = 20;  // margin around the board for frame (~2-3mm on Kindle)
+var BOARD_MARGIN = 15;  // margin around the board for frame
 var SQ_SIZE = Math.floor((viewportMin - BOARD_MARGIN * 2 - 4) / 8);  // 4px for border
 
 // Apply dynamic sizing to board and squares
