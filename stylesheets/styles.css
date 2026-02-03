@@ -33,8 +33,6 @@
 #Board {
 	position: relative;
 	border: 2px solid black;
-	max-width: 100%;
-	overflow: hidden;
 }
 
 #EngineOutput {
@@ -83,22 +81,27 @@
 .clickElement { cursor:pointer }
 
 /* Responsive and touch-friendly styles for Kindle */
-body {
-	margin: 0;
-	padding: 10px;
-	font-family: sans-serif;
-	overflow-x: hidden;
-}
-
 * {
 	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: sans-serif;
+	overflow-x: hidden;
+	width: 100%;
 }
 
 button, select {
 	padding: 8px 12px;
-	margin: 2px;
+	margin: 4px;
 	font-size: 14px;
 	touch-action: manipulation;
+}
+
+#EngineOutput {
+	padding: 10px;
 }
 
 #EngineOutput span {
