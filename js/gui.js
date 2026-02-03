@@ -27,17 +27,20 @@ var MirrorRanks = [
 var viewportWidth = window.innerWidth || document.documentElement.clientWidth || 600;
 var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
 var viewportMin = Math.min(viewportWidth, viewportHeight);
-var SQ_SIZE = Math.floor((viewportMin - 20) / 8);  // 20px padding for border
+var BOARD_MARGIN = 10;  // margin around the board for frame
+var SQ_SIZE = Math.floor((viewportMin - BOARD_MARGIN * 2 - 4) / 8);  // 4px for border
 
 // Apply dynamic sizing to board and squares
 function applyDynamicSizing() {
     var boardSize = SQ_SIZE * 8;
+    var pieceSize = Math.floor(SQ_SIZE * 0.9);  // pieces slightly smaller than squares
 
-    // Update board size
+    // Update board size and margin
     var boardEl = document.getElementById('Board');
     if (boardEl) {
         boardEl.style.width = boardSize + 'px';
         boardEl.style.height = boardSize + 'px';
+        boardEl.style.margin = BOARD_MARGIN + 'px';
     }
 
     // Generate dynamic CSS for ranks and files
@@ -46,6 +49,11 @@ function applyDynamicSizing() {
 
     // Square size
     css += '.Square { width: ' + SQ_SIZE + 'px; height: ' + SQ_SIZE + 'px; }\n';
+
+    // Piece size - scale images to fit within squares, centered with transform (doesn't affect offsetTop)
+    var pieceOffset = Math.floor((SQ_SIZE - pieceSize) / 2);
+    css += '.Piece { width: ' + pieceSize + 'px; height: ' + pieceSize + 'px; ';
+    css += 'transform: translate(' + pieceOffset + 'px, ' + pieceOffset + 'px); }\n';
 
     // Rank positions (rank1 = bottom = 7*SQ_SIZE from top)
     for (var r = 1; r <= 8; r++) {
