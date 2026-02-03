@@ -1,86 +1,4 @@
-#FenInDiv {
-	position: absolute;
-	top: 1000px;
-	left: 60px;
-	display: none;
-}
-
-#fenIn { 
-  width: 480px;
-  left: 60px;
-}
-
-#versionLink {
-	margin-left:10px;
-	font-size:small;
-}
-
-#LoadingBook {
-	position: absolute;
-	left: 0px;
-	top: 100px;	
-	display: none;
-}
-
-#CurrentFenDiv {
-	position: absolute;
-	left: 60px;
-	top: 1000px;
-	margin-top: 40px;
-	display: none;
-}
-
-#Board {
-	position: relative;
-	border: 2px solid black;
-}
-
-#EngineOutput {
-	position: relative;
-	margin-top: 10px;
-	padding: 5px;
-	font-size: 14px;
-}
-
-#ThinkingImageDiv {
-	position: absolute;
-	top: 1200px;
-	left: 600px;
-	display: none;
-}
-
-#ThinkingPng {
-	width: 50px;
-	height: 30px;
-}
-
-
-
-.Piece {
-	position: absolute;
-}
-
-.Square {
-	position: absolute;	
-	width: 120px;
-	height: 120px;
-}
-
-.Light {
-	background-color:#5fbcd3;
-}
-
-.Dark {
-	background-color:#afdde9;
-}
-
-.SqSelected {
-	background-color:#216778;
-}
-
-.clickElement { cursor:pointer }
-
-/* Responsive and touch-friendly styles for Kindle */
+/* Reset */
 * {
 	box-sizing: border-box;
 	margin: 0;
@@ -89,8 +7,48 @@
 
 body {
 	font-family: sans-serif;
-	overflow-x: hidden;
-	width: 100%;
+	overflow: hidden;
+	width: 100vw;
+	max-width: 100%;
+}
+
+/* Board - sized by JS */
+#Board {
+	position: relative;
+	border: 2px solid black;
+	margin: 10px auto;
+}
+
+/* Squares and pieces - positioned by JS */
+.Square {
+	position: absolute;
+}
+
+.Piece {
+	position: absolute;
+}
+
+.Light {
+	background-color: #5fbcd3;
+}
+
+.Dark {
+	background-color: #afdde9;
+}
+
+.SqSelected {
+	background-color: #216778;
+}
+
+/* Controls */
+#EngineOutput {
+	padding: 10px;
+	font-size: 14px;
+}
+
+#EngineOutput span {
+	display: block;
+	margin: 2px 0;
 }
 
 button, select {
@@ -100,53 +58,14 @@ button, select {
 	touch-action: manipulation;
 }
 
-#EngineOutput {
-	padding: 10px;
+/* Hidden elements */
+#FenInDiv,
+#CurrentFenDiv,
+#LoadingBook,
+#ThinkingImageDiv {
+	display: none;
 }
 
-#EngineOutput span {
-	display: block;
-	margin: 2px 0;
+.clickElement {
+	cursor: pointer;
 }
-
-.rank1 { top: 840px; }
-.rank2 { top: 720px; }
-.rank3 { top: 600px; }
-.rank4 { top: 480px; }
-.rank5 { top: 360px; }
-.rank6 { top: 240px; }
-.rank7 { top: 120px; }
-.rank8 { top: 0px; }
-
-.file1 { left: 0px; }
-.file2 { left: 120px; }
-.file3 { left: 240px; }
-.file4 { left: 360px; }
-.file5 { left: 480px; }
-.file6 { left: 600px; }
-.file7 { left: 720px; }
-.file8 { left: 840px; }
-
-.rank8flip { top: 840px; }
-.rank7flip { top: 720px; }
-.rank6flip { top: 600px; }
-.rank5flip { top: 480px; }
-.rank4flip { top: 360px; }
-.rank3flip { top: 240px; }
-.rank2flip { top: 120px; }
-.rank1flip { top: 0px; }
-
-.file8flip { left: 0px; }
-.file7flip { left: 120px; }
-.file6flip { left: 240px; }
-.file5flip { left: 360px; }
-.file4flip { left: 480px; }
-.file3flip { left: 600px; }
-.file2flip { left: 720px; }
-.file1flip { left: 840px; }
-
-
-
-
-
-
