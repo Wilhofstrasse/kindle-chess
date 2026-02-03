@@ -24,20 +24,19 @@ var MirrorRanks = [
 ];
 
 // Calculate square size to fit viewport (optimized for Kindle Paperwhite 6.8")
-// Use 90% of viewport width to guarantee fit, divided by 8 squares
-var SQ_SIZE = Math.floor(window.innerWidth * 0.9 / 8);
+// Use 85% of viewport width to guarantee fit with margins
+var SQ_SIZE = Math.floor(window.innerWidth * 0.85 / 8);
 
 // Apply dynamic sizing to board and squares
 function applyDynamicSizing() {
     var boardSize = SQ_SIZE * 8;
     var pieceSize = Math.floor(SQ_SIZE * 0.85);  // pieces smaller than squares
 
-    // Update board size and center horizontally
+    // Update board size (centering handled by CSS flexbox)
     var boardEl = document.getElementById('Board');
     if (boardEl) {
         boardEl.style.width = boardSize + 'px';
         boardEl.style.height = boardSize + 'px';
-        boardEl.style.margin = '10px auto';
     }
 
     // Generate dynamic CSS for ranks and files
