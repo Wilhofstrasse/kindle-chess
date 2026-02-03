@@ -23,7 +23,58 @@ var MirrorRanks = [
   RANKS.RANK_1,
 ];
 
-var SQ_SIZE = 120;
+// Calculate square size to fit viewport (optimized for Kindle Paperwhite 6.8")
+var viewportWidth = window.innerWidth || document.documentElement.clientWidth || 600;
+var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
+var viewportMin = Math.min(viewportWidth, viewportHeight);
+var SQ_SIZE = Math.floor((viewportMin - 20) / 8);  // 20px padding for border
+
+// Apply dynamic sizing to board and squares
+function applyDynamicSizing() {
+    var boardSize = SQ_SIZE * 8;
+
+    // Update board size
+    var boardEl = document.getElementById('Board');
+    if (boardEl) {
+        boardEl.style.width = boardSize + 'px';
+        boardEl.style.height = boardSize + 'px';
+    }
+
+    // Generate dynamic CSS for ranks and files
+    var style = document.createElement('style');
+    var css = '';
+
+    // Square size
+    css += '.Square { width: ' + SQ_SIZE + 'px; height: ' + SQ_SIZE + 'px; }\n';
+
+    // Rank positions (rank1 = bottom = 7*SQ_SIZE from top)
+    for (var r = 1; r <= 8; r++) {
+        css += '.rank' + r + ' { top: ' + ((8 - r) * SQ_SIZE) + 'px; }\n';
+    }
+
+    // File positions
+    for (var f = 1; f <= 8; f++) {
+        css += '.file' + f + ' { left: ' + ((f - 1) * SQ_SIZE) + 'px; }\n';
+    }
+
+    // Flipped positions
+    for (var r = 1; r <= 8; r++) {
+        css += '.rank' + r + 'flip { top: ' + ((r - 1) * SQ_SIZE) + 'px; }\n';
+    }
+    for (var f = 1; f <= 8; f++) {
+        css += '.file' + f + 'flip { left: ' + ((8 - f) * SQ_SIZE) + 'px; }\n';
+    }
+
+    style.textContent = css;
+    document.head.appendChild(style);
+}
+
+// Apply sizing when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyDynamicSizing);
+} else {
+    applyDynamicSizing();
+}
 
 function MIRROR120(sq) {
   var file = MirrorFiles[FilesBrd[sq]];
