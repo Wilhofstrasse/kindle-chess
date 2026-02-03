@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
 		<meta name="keywords" content="Chess, Engine, Javascript, Play Chess, Chess Program, Javascript Chess, Game">
 		<title>Kindle Chess</title>
-		<link href="stylesheets/styles.css?v=6" rel="stylesheet" type="text/css">
+		<link href="stylesheets/styles.css?v=7" rel="stylesheet" type="text/css">
 		<script type="text/javascript"> if (!window.console) console = {log: function() {}}; </script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q94743BW9M"></script>
@@ -21,21 +21,26 @@
 		<div id="Board">
 		</div>
 		<div id="Controls">
-			<select id="WhitePlayerSelect" title="White"></select>
-			<select id="GameMode"><option value="computer">vs</option><option value="twoplayer">2P</option></select>
-			<select id="BlackPlayerSelect" title="Black"></select>
-			<select id="ThinkTimeChoice">
-				<option value="0.2">0.2s</option>
-				<option value="0.5">0.5s</option>
-				<option value="1" selected>1s</option>
-				<option value="2">2s</option>
-				<option value="4">4s</option>
-				<option value="8">8s</option>
-			</select>
-			<button id="NewGameButton">New</button>
-			<button id="TakeButton">Undo</button>
-			<button id="FlipButton">Flip</button>
-			<label><input type="checkbox" id="HintsToggle">?</label>
+			<div class="ctrl-row">
+				<select id="WhitePlayerSelect"></select>
+				<select id="GameMode"><option value="computer">vs AI</option><option value="twoplayer">2P</option></select>
+				<select id="BlackPlayerSelect"></select>
+				<select id="ThinkTimeChoice">
+					<option value="0.2">0.2s</option>
+					<option value="0.5">0.5s</option>
+					<option value="1" selected>1s</option>
+					<option value="2">2s</option>
+					<option value="4">4s</option>
+					<option value="8">8s</option>
+				</select>
+			</div>
+			<div class="ctrl-row">
+				<button id="NewGameButton">New</button>
+				<button id="SearchButton">Move</button>
+				<button id="TakeButton">Undo</button>
+				<button id="FlipButton">Flip</button>
+				<label class="hint-label"><input type="checkbox" id="HintsToggle">Hint</label>
+			</div>
 		</div>
 		<div id="Info">
 			<span id="PlayerInfo"></span>
@@ -43,7 +48,7 @@
 			<span id="GameStatus"></span>
 		</div>
 		<div id="AddPlayer">
-			<input type="text" id="NewPlayerName" placeholder="Name" maxlength="10">
+			<input type="text" id="NewPlayerName" placeholder="Add player" maxlength="12">
 			<button id="AddPlayerBtn">+</button>
 		</div>
 		<div id="Hidden">
@@ -55,7 +60,6 @@
 			<span id="TimeOut"></span>
 			<span id="currentFenSpan"></span>
 			<span id="LoadingBook"></span>
-			<button id="SearchButton"></button>
 			<div id="ThinkingImageDiv"></div>
 		</div>
 		<script src="js/jquery-1.10.1.min.js"></script>

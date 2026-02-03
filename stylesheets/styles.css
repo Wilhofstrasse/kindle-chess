@@ -41,35 +41,39 @@ body {
 	background-color: #216778;
 }
 
-/* Compact Controls */
+/* Controls - full width rows */
 #Controls {
-	margin: 3px 0;
+	margin: 4px auto;
+	display: inline-block;
 }
 
-#Controls select,
-#Controls button {
-	padding: 4px 6px;
+.ctrl-row {
+	display: flex;
+	margin: 2px 0;
+}
+
+.ctrl-row select,
+.ctrl-row button,
+.ctrl-row .hint-label {
+	flex: 1;
+	padding: 6px 4px;
 	margin: 1px;
-	font-size: 11px;
-	vertical-align: middle;
+	font-size: 12px;
+	text-align: center;
+	min-width: 0;
 }
 
-#Controls label {
-	font-size: 11px;
-	margin-left: 2px;
+.hint-label {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #eee;
+	border: 1px solid #999;
+	border-radius: 3px;
 }
 
-#WhitePlayerSelect,
-#BlackPlayerSelect {
-	max-width: 80px;
-}
-
-#GameMode {
-	max-width: 40px;
-}
-
-#ThinkTimeChoice {
-	max-width: 50px;
+.hint-label input {
+	margin-right: 3px;
 }
 
 /* Info line */
