@@ -31,11 +31,25 @@ function applyDynamicSizing() {
     var boardSize = SQ_SIZE * 8;
     var pieceSize = Math.floor(SQ_SIZE * 0.85);  // pieces smaller than squares
 
-    // Update board size (centering handled by CSS flexbox)
+    // Update board size (centering handled by CSS)
     var boardEl = document.getElementById('Board');
     if (boardEl) {
         boardEl.style.width = boardSize + 'px';
         boardEl.style.height = boardSize + 'px';
+    }
+
+    // Match controls width to board
+    var controlsEl = document.getElementById('Controls');
+    if (controlsEl) {
+        controlsEl.style.width = boardSize + 'px';
+    }
+    var infoEl = document.getElementById('Info');
+    if (infoEl) {
+        infoEl.style.width = boardSize + 'px';
+    }
+    var addPlayerEl = document.getElementById('AddPlayer');
+    if (addPlayerEl) {
+        addPlayerEl.style.width = boardSize + 'px';
     }
 
     // Generate dynamic CSS for ranks and files
@@ -646,27 +660,27 @@ function showHint() {
   }
 
   // Quick search to find best move
-  var oldThinking = srch_thinking;
-  srch_thinking = BOOL.FALSE;  // Allow search
-
   var oldTime = srch_time;
-  srch_time = 300;  // Quick 0.3s search for hint
-  ClearForSearch();
+  srch_time = 200;  // Quick 0.2s search for hint
+  srch_start = $.now();  // Set start time for search
+  srch_stop = BOOL.FALSE;
+  srch_depth = 4;
+  brd_ply = 0;
 
   // Run a shallow search
   var bestMove = NOMOVE;
-  var bestScore = -INFINITE;
   for (var depth = 1; depth <= 4; depth++) {
-    bestScore = AlphaBeta(-INFINITE, INFINITE, depth, BOOL.TRUE);
+    AlphaBeta(-INFINITE, INFINITE, depth, BOOL.TRUE);
     if (srch_stop == BOOL.TRUE) break;
     bestMove = brd_PvArray[0];
   }
 
   srch_time = oldTime;
-  srch_thinking = oldThinking;
 
-  if (bestMove != NOMOVE) {
-    $("#HintDisplay").text("Hint: " + PrMove(bestMove));
+  if (bestMove && bestMove != NOMOVE) {
+    $("#HintDisplay").text("Try: " + PrMove(bestMove));
+  } else {
+    $("#HintDisplay").text("");
   }
 }
 
