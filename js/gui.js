@@ -50,10 +50,8 @@ function applyDynamicSizing() {
     // Square size
     css += '.Square { width: ' + SQ_SIZE + 'px; height: ' + SQ_SIZE + 'px; }\n';
 
-    // Piece size - scale images to fit within squares, centered with transform (doesn't affect offsetTop)
-    var pieceOffset = Math.floor((SQ_SIZE - pieceSize) / 2);
-    css += '.Piece { width: ' + pieceSize + 'px; height: ' + pieceSize + 'px; ';
-    css += 'transform: translate(' + pieceOffset + 'px, ' + pieceOffset + 'px); }\n';
+    // Piece size - scale images to fit within squares
+    css += '.Piece { width: ' + pieceSize + 'px; height: ' + pieceSize + 'px; }\n';
 
     // Rank positions (rank1 = bottom = 7*SQ_SIZE from top)
     for (var r = 1; r <= 8; r++) {
