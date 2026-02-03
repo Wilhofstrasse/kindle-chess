@@ -24,8 +24,7 @@ var MirrorRanks = [
 ];
 
 // Calculate square size to fit viewport (optimized for Kindle Paperwhite 6.8")
-// Use 95% of viewport width, then subtract padding
-var SQ_SIZE = Math.floor((window.innerWidth - 30) / 8);
+var SQ_SIZE = Math.floor((window.innerWidth - 16) / 8);
 
 // Apply dynamic sizing to board and squares
 function applyDynamicSizing() {
