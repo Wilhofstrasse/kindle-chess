@@ -26,11 +26,9 @@ var MirrorRanks = [
 // Calculate square size to fit viewport (optimized for Kindle Paperwhite 6.8")
 var viewportWidth = window.innerWidth || document.documentElement.clientWidth || 600;
 var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
-var viewportMin = Math.min(viewportWidth, viewportHeight);
-var BODY_PADDING = 5;   // matches body padding in CSS
-var BOARD_MARGIN = 10;  // margin around the board for frame
-var BOARD_BORDER = 4;   // 2px border on each side
-var SQ_SIZE = Math.floor((viewportMin - BODY_PADDING * 2 - BOARD_MARGIN * 2 - BOARD_BORDER) / 8);
+// Use width only - we want the board to fit horizontally
+var TOTAL_PADDING = 50;  // generous padding to guarantee fit
+var SQ_SIZE = Math.floor((viewportWidth - TOTAL_PADDING) / 8);
 
 // Apply dynamic sizing to board and squares
 function applyDynamicSizing() {
@@ -44,8 +42,10 @@ function applyDynamicSizing() {
         boardEl.style.height = boardSize + 'px';
         boardEl.style.marginLeft = 'auto';
         boardEl.style.marginRight = 'auto';
-        boardEl.style.marginTop = BOARD_MARGIN + 'px';
+        boardEl.style.marginTop = '10px';
         boardEl.style.display = 'block';
+        boardEl.style.maxWidth = '100%';
+        boardEl.style.overflow = 'hidden';
     }
 
     // Generate dynamic CSS for ranks and files

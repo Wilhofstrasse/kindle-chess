@@ -32,12 +32,9 @@
 
 #Board {
 	position: relative;
-	left: 0px;
-	top: 0px;
-	width: 960px;
-	height: 960px;
-	border-style:solid;
-	border-width:2px;
+	border: 2px solid black;
+	max-width: 100%;
+	overflow: hidden;
 }
 
 #EngineOutput {
@@ -88,8 +85,13 @@
 /* Responsive and touch-friendly styles for Kindle */
 body {
 	margin: 0;
-	padding: 5px;
+	padding: 10px;
 	font-family: sans-serif;
+	overflow-x: hidden;
+}
+
+* {
+	box-sizing: border-box;
 }
 
 button, select {
