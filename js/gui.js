@@ -28,21 +28,24 @@ var viewportWidth = window.innerWidth || document.documentElement.clientWidth ||
 var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
 var viewportMin = Math.min(viewportWidth, viewportHeight);
 var BODY_PADDING = 5;   // matches body padding in CSS
-var BOARD_MARGIN = 15;  // margin around the board for frame
+var BOARD_MARGIN = 10;  // margin around the board for frame
 var BOARD_BORDER = 4;   // 2px border on each side
-var SQ_SIZE = Math.floor((viewportMin - BODY_PADDING * 2 - BOARD_MARGIN * 2 - BOARD_BORDER) / 8);
+var SQ_SIZE = Math.floor((viewportMin - BODY_PADDING * 2 - BOARD_BORDER) / 8);
 
 // Apply dynamic sizing to board and squares
 function applyDynamicSizing() {
     var boardSize = SQ_SIZE * 8;
     var pieceSize = Math.floor(SQ_SIZE * 0.9);  // pieces slightly smaller than squares
 
-    // Update board size and margin
+    // Update board size and center horizontally
     var boardEl = document.getElementById('Board');
     if (boardEl) {
         boardEl.style.width = boardSize + 'px';
         boardEl.style.height = boardSize + 'px';
-        boardEl.style.margin = BOARD_MARGIN + 'px';
+        boardEl.style.marginLeft = 'auto';
+        boardEl.style.marginRight = 'auto';
+        boardEl.style.marginTop = BOARD_MARGIN + 'px';
+        boardEl.style.display = 'block';
     }
 
     // Generate dynamic CSS for ranks and files
