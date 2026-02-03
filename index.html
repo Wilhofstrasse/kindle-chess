@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
 		<meta name="keywords" content="Chess, Engine, Javascript, Play Chess, Chess Program, Javascript Chess, Game">
 		<title>Kindle Chess</title>
-		<link href="stylesheets/styles.css?v=4" rel="stylesheet" type="text/css">
+		<link href="stylesheets/styles.css?v=5" rel="stylesheet" type="text/css">
 		<script type="text/javascript"> if (!window.console) console = {log: function() {}}; </script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q94743BW9M"></script>
@@ -18,26 +18,49 @@
 </script>
 	</head>
 	<body>
-		<header>
-		</header>
-		<div id="FenInDiv" >			
-			<input type="text" id="fenIn" />		
-			<button type="button" id="SetFen" >Set Position</button>	
-		</div>	
+		<div id="GameSetup">
+			<div class="setup-row">
+				<label>Mode:</label>
+				<select id="GameMode">
+					<option value="computer">vs Computer</option>
+					<option value="twoplayer">Two Players</option>
+				</select>
+			</div>
+			<div class="setup-row">
+				<label>White:</label>
+				<select id="WhitePlayerSelect"></select>
+			</div>
+			<div class="setup-row" id="BlackPlayerRow">
+				<label>Black:</label>
+				<select id="BlackPlayerSelect"></select>
+			</div>
+			<div class="setup-row">
+				<input type="text" id="NewPlayerName" placeholder="Add player">
+				<button type="button" id="AddPlayerBtn">+</button>
+			</div>
+			<div class="setup-row">
+				<label><input type="checkbox" id="HintsToggle"> Hints</label>
+				<span id="HintDisplay"></span>
+			</div>
+		</div>
 		<div id="Board">
 		</div>
 		<div id="CurrentFenDiv"  display="" >
 			<span id="currentFenSpan"></span>		
 		</div>	
-		<div id="EngineOutput">Thinking Time:
-			<select id="ThinkTimeChoice">
-				<option value="1">1s</option>
-				<option value="2">2s</option>
-				<option value="4">4s</option>
-				<option value="6">6s</option>
-				<option value="8">8s</option>
-				<option value="10">10s</option>
-			</select>
+		<div id="EngineOutput">
+			<span id="PlayerInfo"></span>
+			<div class="controls-row">
+				<select id="ThinkTimeChoice">
+					<option value="0.2">0.2s</option>
+					<option value="0.5">0.5s</option>
+					<option value="1" selected>1s</option>
+					<option value="2">2s</option>
+					<option value="4">4s</option>
+					<option value="6">6s</option>
+					<option value="8">8s</option>
+					<option value="10">10s</option>
+				</select>
 			<button type="button" id="SearchButton">Move</button>
 			<button type="button" id="NewGameButton">New</button>
 			<button type="button" id="FlipButton">Flip</button>
@@ -66,7 +89,8 @@
 		<script src="js/pvtable.js"></script>
 		<script src="js/search.js"></script>
 		<script src="js/protocol.js"></script>
-		<script src="js/gui.js?v=4"></script>
+		<script src="js/players.js?v=5"></script>
+		<script src="js/gui.js?v=5"></script>
 		<script src="js/main.js"></script>
 	</body>
 </html>

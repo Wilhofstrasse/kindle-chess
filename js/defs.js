@@ -385,3 +385,6 @@ GameController.BoardFlipped = BOOL.FALSE;
 GameController.GameOver = BOOL.FALSE;
 GameController.BookLoaded = BOOL.FALSE;
 GameController.GameSaved = BOOL.TRUE;
+GameController.TwoPlayerMode = BOOL.FALSE;
+GameController.WhitePlayer = null;
+GameController.BlackPlayer = null;

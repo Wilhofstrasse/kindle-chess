@@ -204,14 +204,55 @@ function CheckAndSet() {
     $("#GameStatus").text("");
   } else {
     GameController.GameOver = BOOL.TRUE;
-    GameController.GameSaved = BOOL.TRUE; // save the game here
+    GameController.GameSaved = BOOL.TRUE;
+    recordGameResult();  // Record result and update ELO
   }
-  //var fenStr = BoardToFen();
   $("#currentFenSpan").text(BoardToFen());
+  updatePlayerInfo();
+}
+
+function recordGameResult() {
+  var status = $("#GameStatus").text();
+  var result = null;
+
+  if (status.includes("white mates")) result = "1-0";
+  else if (status.includes("black mates")) result = "0-1";
+  else if (status.includes("DRAWN")) result = "1/2-1/2";
+
+  if (result && GameController.WhitePlayer && GameController.BlackPlayer) {
+    PlayerManager.recordGame(
+      GameController.WhitePlayer,
+      GameController.BlackPlayer,
+      result
+    );
+    updatePlayerSelectors();  // Refresh to show new ELOs
+  }
+}
+
+function updatePlayerInfo() {
+  var white = GameController.WhitePlayer;
+  var black = GameController.BlackPlayer;
+  var info = "";
+
+  if (white) {
+    info += white.name + " (" + white.elo + ")";
+  }
+  if (black) {
+    info += " vs " + black.name + " (" + black.elo + ")";
+  }
+
+  $("#PlayerInfo").text(info);
 }
 
 function PreSearch() {
   if (GameController.GameOver != BOOL.TRUE) {
+    // Two-player mode: skip computer, just switch sides
+    if (GameController.TwoPlayerMode == BOOL.TRUE) {
+      GameController.PlayerSide ^= 1;
+      showHint();
+      return;
+    }
+
     srch_thinking = BOOL.TRUE;
     $("#ThinkingImageDiv").append(
       '<image src="images/think3.png" id="ThinkingPng"/>'
@@ -245,9 +286,15 @@ function MakeUserMove() {
   }
 }
 
+function canPlayerMove() {
+  // Allow move if not thinking AND (two-player mode OR it's player's turn)
+  return srch_thinking == BOOL.FALSE &&
+    (GameController.TwoPlayerMode == BOOL.TRUE || GameController.PlayerSide == brd_side);
+}
+
 $(document).on("click", ".Piece", function (e) {
   console.log("Piece Click");
-  if (srch_thinking == BOOL.FALSE && GameController.PlayerSide == brd_side) {
+  if (canPlayerMove()) {
     if (UserMove.from == SQUARES.NO_SQ)
       UserMove.from = ClickedSquare(e.pageX, e.pageY);
     else UserMove.to = ClickedSquare(e.pageX, e.pageY);
@@ -258,11 +305,7 @@ $(document).on("click", ".Piece", function (e) {
 
 $(document).on("click", ".Square", function (e) {
   console.log("Square Click");
-  if (
-    srch_thinking == BOOL.FALSE &&
-    GameController.PlayerSide == brd_side &&
-    UserMove.from != SQUARES.NO_SQ
-  ) {
+  if (canPlayerMove() && UserMove.from != SQUARES.NO_SQ) {
     UserMove.to = ClickedSquare(e.pageX, e.pageY);
     MakeUserMove();
   }
@@ -442,14 +485,14 @@ function StartSearch() {
   var t = $.now();
   var tt = $("#ThinkTimeChoice").val();
   console.log("time:" + t + " TimeChoice:" + tt);
-  srch_time = parseInt(tt) * 1000;
+  srch_time = parseFloat(tt) * 1000;  // Use parseFloat for fractional seconds
   SearchPosition();
 
-  // TODO MakeMove here on internal board and GUI
   MakeMove(srch_best);
   MoveGUIPiece(srch_best);
   $("#ThinkingPng").remove();
   CheckAndSet();
+  showHint();  // Show hint for player's next move
 }
 
 $("#TakeButton").click(function () {
@@ -478,8 +521,26 @@ function NewGame() {
   PrintBoard();
   SetInitialBoardPieces();
   GameController.PlayerSide = brd_side;
-  CheckAndSet();
+  GameController.GameOver = BOOL.FALSE;
   GameController.GameSaved = BOOL.FALSE;
+  $("#GameStatus").text("");
+  $("#HintDisplay").text("");
+
+  // Set players based on selections
+  var whitePlayerName = $("#WhitePlayerSelect").val();
+  var blackPlayerName = $("#BlackPlayerSelect").val();
+
+  GameController.WhitePlayer = PlayerManager.getPlayer(whitePlayerName);
+
+  if (GameController.TwoPlayerMode == BOOL.TRUE) {
+    GameController.BlackPlayer = PlayerManager.getPlayer(blackPlayerName);
+  } else {
+    var thinkTime = $("#ThinkTimeChoice").val();
+    GameController.BlackPlayer = PlayerManager.getComputerPlayer(thinkTime);
+  }
+
+  updatePlayerInfo();
+  CheckAndSet();
 }
 
 $("#NewGameButton").click(function () {
@@ -572,8 +633,115 @@ function SetInitialBoardPieces() {
         " " +
         fileName +
         '"/>';
-      //console.log(imageString);
       $("#Board").append(imageString);
     }
   }
 }
+
+// === HINT FEATURE ===
+function showHint() {
+  if (!$("#HintsToggle").is(":checked") || GameController.GameOver == BOOL.TRUE) {
+    $("#HintDisplay").text("");
+    return;
+  }
+
+  // Quick search to find best move
+  var oldThinking = srch_thinking;
+  srch_thinking = BOOL.FALSE;  // Allow search
+
+  var oldTime = srch_time;
+  srch_time = 300;  // Quick 0.3s search for hint
+  ClearForSearch();
+
+  // Run a shallow search
+  var bestMove = NOMOVE;
+  var bestScore = -INFINITE;
+  for (var depth = 1; depth <= 4; depth++) {
+    bestScore = AlphaBeta(-INFINITE, INFINITE, depth, BOOL.TRUE);
+    if (srch_stop == BOOL.TRUE) break;
+    bestMove = brd_PvArray[0];
+  }
+
+  srch_time = oldTime;
+  srch_thinking = oldThinking;
+
+  if (bestMove != NOMOVE) {
+    $("#HintDisplay").text("Hint: " + PrMove(bestMove));
+  }
+}
+
+// === PLAYER MANAGEMENT UI ===
+function updatePlayerSelectors() {
+  var players = PlayerManager.loadPlayers();
+  var whiteSelect = $("#WhitePlayerSelect");
+  var blackSelect = $("#BlackPlayerSelect");
+
+  var whiteVal = whiteSelect.val();
+  var blackVal = blackSelect.val();
+
+  whiteSelect.empty();
+  blackSelect.empty();
+
+  for (var i = 0; i < players.length; i++) {
+    var p = players[i];
+    var optionText = p.name + " (" + p.elo + ")";
+    whiteSelect.append('<option value="' + p.name + '">' + optionText + '</option>');
+    blackSelect.append('<option value="' + p.name + '">' + optionText + '</option>');
+  }
+
+  // Restore selections
+  if (whiteVal) whiteSelect.val(whiteVal);
+  if (blackVal) blackSelect.val(blackVal);
+}
+
+function updateGameModeUI() {
+  var mode = $("#GameMode").val();
+  GameController.TwoPlayerMode = (mode === "twoplayer") ? BOOL.TRUE : BOOL.FALSE;
+
+  if (GameController.TwoPlayerMode == BOOL.TRUE) {
+    $("#BlackPlayerRow").show();
+    $("#ThinkTimeChoice").hide();
+  } else {
+    $("#BlackPlayerRow").hide();
+    $("#ThinkTimeChoice").show();
+  }
+}
+
+// === EVENT HANDLERS ===
+$("#GameMode").change(function() {
+  updateGameModeUI();
+});
+
+$("#AddPlayerBtn").click(function() {
+  var name = $("#NewPlayerName").val().trim();
+  if (name) {
+    var player = PlayerManager.addPlayer(name);
+    if (player) {
+      updatePlayerSelectors();
+      $("#NewPlayerName").val("");
+    } else {
+      alert("Player already exists or invalid name");
+    }
+  }
+});
+
+$("#HintsToggle").change(function() {
+  if ($(this).is(":checked")) {
+    showHint();
+  } else {
+    $("#HintDisplay").text("");
+  }
+});
+
+// Initialize on page load
+$(document).ready(function() {
+  updatePlayerSelectors();
+  updateGameModeUI();
+
+  // Add default players if none exist
+  var players = PlayerManager.loadPlayers();
+  if (players.length === 0) {
+    PlayerManager.addPlayer("Player 1");
+    updatePlayerSelectors();
+  }
+});

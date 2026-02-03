@@ -62,11 +62,66 @@ button, select {
 	touch-action: manipulation;
 }
 
+/* Game Setup */
+#GameSetup {
+	padding: 5px;
+	margin-bottom: 5px;
+	text-align: left;
+	display: inline-block;
+	width: 100%;
+	max-width: 400px;
+}
+
+.setup-row {
+	margin: 4px 0;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.setup-row label {
+	min-width: 50px;
+}
+
+.setup-row select,
+.setup-row input[type="text"] {
+	flex: 1;
+	padding: 6px;
+	font-size: 14px;
+}
+
+#NewPlayerName {
+	max-width: 150px;
+}
+
+#AddPlayerBtn {
+	padding: 6px 12px;
+}
+
+#HintDisplay {
+	color: #216778;
+	font-weight: bold;
+	margin-left: 10px;
+}
+
+#PlayerInfo {
+	font-weight: bold;
+	display: block;
+	margin-bottom: 8px;
+}
+
+.controls-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
 /* Hidden elements */
 #FenInDiv,
 #CurrentFenDiv,
 #LoadingBook,
-#ThinkingImageDiv {
+#ThinkingImageDiv,
+header {
 	display: none;
 }
 
