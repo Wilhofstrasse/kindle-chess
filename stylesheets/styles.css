@@ -9,10 +9,11 @@ body {
 	font-family: sans-serif;
 	overflow: hidden;
 	text-align: center;
-	padding: 5px;
+	padding: 2px;
+	font-size: 12px;
 }
 
-/* Board - sized by JS */
+/* Board */
 #Board {
 	position: relative;
 	border: 2px solid black;
@@ -20,7 +21,6 @@ body {
 	text-align: left;
 }
 
-/* Squares and pieces - positioned by JS */
 .Square {
 	position: absolute;
 }
@@ -41,86 +41,81 @@ body {
 	background-color: #216778;
 }
 
-/* Controls */
-#EngineOutput {
-	padding: 10px;
-	font-size: 14px;
-	text-align: left;
-	display: inline-block;
-	width: 100%;
+/* Compact Controls */
+#Controls {
+	margin: 3px 0;
 }
 
-#EngineOutput span {
-	display: block;
+#Controls select,
+#Controls button {
+	padding: 4px 6px;
+	margin: 1px;
+	font-size: 11px;
+	vertical-align: middle;
+}
+
+#Controls label {
+	font-size: 11px;
+	margin-left: 2px;
+}
+
+#WhitePlayerSelect,
+#BlackPlayerSelect {
+	max-width: 80px;
+}
+
+#GameMode {
+	max-width: 40px;
+}
+
+#ThinkTimeChoice {
+	max-width: 50px;
+}
+
+/* Info line */
+#Info {
+	font-size: 11px;
 	margin: 2px 0;
 }
 
-button, select {
-	padding: 8px 12px;
-	margin: 4px;
-	font-size: 14px;
-	touch-action: manipulation;
-}
-
-/* Game Setup */
-#GameSetup {
-	padding: 5px;
-	margin-bottom: 5px;
-	text-align: left;
-	display: inline-block;
-	width: 100%;
-	max-width: 400px;
-}
-
-.setup-row {
-	margin: 4px 0;
-	display: flex;
-	align-items: center;
-	gap: 8px;
-}
-
-.setup-row label {
-	min-width: 50px;
-}
-
-.setup-row select,
-.setup-row input[type="text"] {
-	flex: 1;
-	padding: 6px;
-	font-size: 14px;
-}
-
-#NewPlayerName {
-	max-width: 150px;
-}
-
-#AddPlayerBtn {
-	padding: 6px 12px;
+#PlayerInfo {
+	font-weight: bold;
 }
 
 #HintDisplay {
 	color: #216778;
 	font-weight: bold;
-	margin-left: 10px;
+	margin-left: 5px;
 }
 
-#PlayerInfo {
-	font-weight: bold;
-	display: block;
-	margin-bottom: 8px;
+#GameStatus {
+	color: #800;
+	margin-left: 5px;
 }
 
-.controls-row {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
+/* Add player - compact */
+#AddPlayer {
+	margin: 2px 0;
+}
+
+#NewPlayerName {
+	width: 80px;
+	padding: 3px;
+	font-size: 11px;
+}
+
+#AddPlayerBtn {
+	padding: 3px 8px;
+	font-size: 11px;
 }
 
 /* Hidden elements */
+#Hidden,
 #FenInDiv,
 #CurrentFenDiv,
 #LoadingBook,
 #ThinkingImageDiv,
+#EngineOutput,
 header {
 	display: none;
 }

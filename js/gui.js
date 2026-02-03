@@ -699,10 +699,10 @@ function updateGameModeUI() {
   GameController.TwoPlayerMode = (mode === "twoplayer") ? BOOL.TRUE : BOOL.FALSE;
 
   if (GameController.TwoPlayerMode == BOOL.TRUE) {
-    $("#BlackPlayerRow").show();
+    $("#BlackPlayerSelect").show();
     $("#ThinkTimeChoice").hide();
   } else {
-    $("#BlackPlayerRow").hide();
+    $("#BlackPlayerSelect").hide();
     $("#ThinkTimeChoice").show();
   }
 }
