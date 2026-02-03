@@ -8,18 +8,16 @@
 body {
 	font-family: sans-serif;
 	overflow: hidden;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding: 5px;
+	text-align: center;
+	padding: 10px;
 }
 
 /* Board - sized by JS */
 #Board {
 	position: relative;
 	border: 2px solid black;
-	margin: 5px 0;
-	flex-shrink: 0;
+	display: inline-block;
+	text-align: left;
 }
 
 /* Squares and pieces - positioned by JS */
@@ -47,6 +45,9 @@ body {
 #EngineOutput {
 	padding: 10px;
 	font-size: 14px;
+	text-align: left;
+	display: inline-block;
+	width: 100%;
 }
 
 #EngineOutput span {
