@@ -30,7 +30,7 @@ var viewportMin = Math.min(viewportWidth, viewportHeight);
 var BODY_PADDING = 5;   // matches body padding in CSS
 var BOARD_MARGIN = 10;  // margin around the board for frame
 var BOARD_BORDER = 4;   // 2px border on each side
-var SQ_SIZE = Math.floor((viewportMin - BODY_PADDING * 2 - BOARD_BORDER) / 8);
+var SQ_SIZE = Math.floor((viewportMin - BODY_PADDING * 2 - BOARD_MARGIN * 2 - BOARD_BORDER) / 8);
 
 // Apply dynamic sizing to board and squares
 function applyDynamicSizing() {
