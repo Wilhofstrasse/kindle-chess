@@ -223,6 +223,7 @@ function CheckAndSet() {
   }
   $("#currentFenSpan").text(BoardToFen());
   updatePlayerInfo();
+  GameSaver.saveGame();  // Auto-save after every move
 }
 
 function recordGameResult() {
@@ -533,6 +534,7 @@ $("#FlipButton").click(function () {
 });
 
 function NewGame() {
+  GameSaver.clearSave();  // Clear saved game
   ParseFen(START_FEN);
   PrintBoard();
   SetInitialBoardPieces();
@@ -541,6 +543,7 @@ function NewGame() {
   GameController.GameSaved = BOOL.FALSE;
   $("#GameStatus").text("");
   $("#HintDisplay").text("");
+  clearHintHighlight();
 
   // Set players based on selections
   var whitePlayerName = $("#WhitePlayerSelect").val();
@@ -702,18 +705,40 @@ function showHint() {
     return;
   }
 
-  // Use a timeout so the board renders first, then compute hint
+  // Don't run hint while AI is thinking
+  if (srch_thinking == BOOL.TRUE) {
+    return;
+  }
+
+  // Delay to let board render first
   setTimeout(function() {
-    // Full reset of search state
-    ClearForSearch();
-    srch_time = 300;
-    srch_depth = MAXDEPTH;
+    if (srch_thinking == BOOL.TRUE) return;  // Double-check
 
-    // Search from current position (player's perspective)
-    SearchPosition();
+    // Lightweight search: reset search state, short time limit
+    var savedThinking = srch_thinking;
+    srch_nodes = 0;
+    srch_fh = 0;
+    srch_fhf = 0;
+    srch_start = $.now();
+    srch_time = 200;
+    srch_stop = BOOL.FALSE;
+    brd_ply = 0;
 
-    var bestMove = srch_best;
-    srch_thinking = BOOL.FALSE;  // Reset thinking flag
+    // Clear search tables
+    for (var i = 0; i < 14 * BRD_SQ_NUM; i++) brd_searchHistory[i] = 0;
+    for (var i = 0; i < 3 * MAXDEPTH; i++) brd_searchKillers[i] = 0;
+    ClearPvTable();
+
+    // Shallow search (max depth 4)
+    var bestMove = NOMOVE;
+    for (var depth = 1; depth <= 4; depth++) {
+      AlphaBeta(-INFINITE, INFINITE, depth, BOOL.TRUE);
+      if (srch_stop == BOOL.TRUE) break;
+      bestMove = brd_PvArray[0] || bestMove;
+    }
+
+    srch_thinking = savedThinking;
+    brd_ply = 0;
 
     if (bestMove && bestMove != NOMOVE) {
       var from = FROMSQ(bestMove);
@@ -722,7 +747,7 @@ function showHint() {
       addHintDot(to);
       $("#HintDisplay").text(PrMove(bestMove));
     }
-  }, 100);
+  }, 150);
 }
 
 // === PLAYER MANAGEMENT UI ===
@@ -798,5 +823,43 @@ $(document).ready(function() {
   if (players.length === 0) {
     PlayerManager.addPlayer("Player 1");
     updatePlayerSelectors();
+  }
+
+  // Restore saved game if exists
+  var saved = GameSaver.loadGame();
+  if (saved && !saved.gameOver) {
+    // Restore board position
+    ParseFen(saved.fen);
+    PrintBoard();
+    SetInitialBoardPieces();
+
+    // Restore controller state
+    GameController.PlayerSide = saved.playerSide;
+    GameController.BoardFlipped = saved.boardFlipped;
+    GameController.TwoPlayerMode = saved.twoPlayerMode;
+    GameController.GameOver = saved.gameOver;
+    GameController.WhitePlayer = saved.whitePlayer;
+    GameController.BlackPlayer = saved.blackPlayer;
+
+    // Restore UI state
+    if (saved.thinkTime) $("#ThinkTimeChoice").val(saved.thinkTime);
+    if (saved.gameMode) {
+      $("#GameMode").val(saved.gameMode);
+      updateGameModeUI();
+    }
+    if (saved.hintsOn) $("#HintsToggle").prop("checked", true);
+
+    // Restore player selections
+    if (saved.whitePlayer) $("#WhitePlayerSelect").val(saved.whitePlayer.name);
+    if (saved.blackPlayer && saved.blackPlayer.name !== 'Computer') {
+      $("#BlackPlayerSelect").val(saved.blackPlayer.name);
+    }
+
+    // Refresh board if flipped
+    if (saved.boardFlipped) SetInitialBoardPieces();
+
+    updatePlayerInfo();
+    showHint();
+    console.log("Game restored from auto-save");
   }
 });

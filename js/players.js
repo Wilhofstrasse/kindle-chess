@@ -155,3 +155,50 @@ var PlayerManager = {
         this.savePlayers(players);
     }
 };
+
+// === GAME AUTO-SAVE ===
+var GameSaver = {
+    SAVE_KEY: 'kindle_chess_game',
+
+    saveGame: function() {
+        try {
+            var state = {
+                fen: BoardToFen(),
+                hisPly: brd_hisPly,
+                playerSide: GameController.PlayerSide,
+                boardFlipped: GameController.BoardFlipped,
+                twoPlayerMode: GameController.TwoPlayerMode,
+                gameOver: GameController.GameOver,
+                whitePlayer: GameController.WhitePlayer,
+                blackPlayer: GameController.BlackPlayer,
+                hintsOn: $("#HintsToggle").is(":checked"),
+                thinkTime: $("#ThinkTimeChoice").val(),
+                gameMode: $("#GameMode").val(),
+                timestamp: Date.now()
+            };
+            localStorage.setItem(this.SAVE_KEY, JSON.stringify(state));
+        } catch(e) {
+            console.log('Error saving game:', e);
+        }
+    },
+
+    loadGame: function() {
+        try {
+            var saved = localStorage.getItem(this.SAVE_KEY);
+            if (!saved) return null;
+            return JSON.parse(saved);
+        } catch(e) {
+            console.log('Error loading game:', e);
+            return null;
+        }
+    },
+
+    clearSave: function() {
+        localStorage.removeItem(this.SAVE_KEY);
+    },
+
+    hasSavedGame: function() {
+        var saved = this.loadGame();
+        return saved !== null && !saved.gameOver;
+    }
+};
