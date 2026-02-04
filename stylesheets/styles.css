@@ -41,12 +41,12 @@ body {
 	background-color: #216778;
 }
 
-.HintFrom {
-	background-color: #7fbf7f !important;
-}
-
-.HintTo {
-	background-color: #4da64d !important;
+.hint-dot {
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.4);
+	border-radius: 50%;
+	pointer-events: none;
+	z-index: 10;
 }
 
 /* Board coordinates */

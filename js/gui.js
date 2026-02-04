@@ -666,30 +666,30 @@ function SetInitialBoardPieces() {
 
 // === HINT FEATURE ===
 function clearHintHighlight() {
-  $(".Square").removeClass("HintFrom HintTo");
+  $(".hint-dot").remove();
 }
 
-function highlightHintSquares(from, to) {
-  clearHintHighlight();
-
-  var fromFlipped = from;
-  var toFlipped = to;
+function addHintDot(sq) {
+  var flipped = sq;
   if (GameController.BoardFlipped == BOOL.TRUE) {
-    fromFlipped = MIRROR120(from);
-    toFlipped = MIRROR120(to);
+    flipped = MIRROR120(sq);
   }
 
-  $(".Square").each(function () {
-    var sqRank = 7 - Math.round($(this).position().top / SQ_SIZE);
-    var sqFile = Math.round($(this).position().left / SQ_SIZE);
+  var rank = RanksBrd[flipped];
+  var file = FilesBrd[flipped];
+  var rankName = "rank" + (rank + 1);
+  var fileName = "file" + (file + 1);
+  var dotSize = Math.floor(SQ_SIZE * 0.35);
+  var offset = Math.floor((SQ_SIZE - dotSize) / 2);
 
-    if (RanksBrd[fromFlipped] == sqRank && FilesBrd[fromFlipped] == sqFile) {
-      $(this).addClass("HintFrom");
-    }
-    if (RanksBrd[toFlipped] == sqRank && FilesBrd[toFlipped] == sqFile) {
-      $(this).addClass("HintTo");
-    }
+  var dot = $('<div class="hint-dot ' + rankName + ' ' + fileName + '"></div>');
+  dot.css({
+    width: dotSize + 'px',
+    height: dotSize + 'px',
+    marginLeft: offset + 'px',
+    marginTop: offset + 'px'
   });
+  $("#Board").append(dot);
 }
 
 function showHint() {
@@ -720,7 +720,8 @@ function showHint() {
   if (bestMove && bestMove != NOMOVE) {
     var from = FROMSQ(bestMove);
     var to = TOSQ(bestMove);
-    highlightHintSquares(from, to);
+    addHintDot(from);
+    addHintDot(to);
     $("#HintDisplay").text(PrMove(bestMove));
   } else {
     $("#HintDisplay").text("");
