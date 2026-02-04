@@ -714,39 +714,45 @@ function showHint() {
   setTimeout(function() {
     if (srch_thinking == BOOL.TRUE) return;  // Double-check
 
-    // Lightweight search: reset search state, short time limit
-    var savedThinking = srch_thinking;
-    srch_nodes = 0;
-    srch_fh = 0;
-    srch_fhf = 0;
-    srch_start = $.now();
-    srch_time = 200;
-    srch_stop = BOOL.FALSE;
-    brd_ply = 0;
+    try {
+      // Lightweight search: reset search state, short time limit
+      var savedThinking = srch_thinking;
+      srch_nodes = 0;
+      srch_fh = 0;
+      srch_fhf = 0;
+      srch_start = $.now();
+      srch_time = 200;
+      srch_stop = BOOL.FALSE;
+      brd_ply = 0;
 
-    // Clear search tables
-    for (var i = 0; i < 14 * BRD_SQ_NUM; i++) brd_searchHistory[i] = 0;
-    for (var i = 0; i < 3 * MAXDEPTH; i++) brd_searchKillers[i] = 0;
-    ClearPvTable();
+      // Clear search tables
+      for (var i = 0; i < 14 * BRD_SQ_NUM; i++) brd_searchHistory[i] = 0;
+      for (var i = 0; i < 3 * MAXDEPTH; i++) brd_searchKillers[i] = 0;
+      ClearPvTable();
 
-    // Shallow search (max depth 4)
-    var bestMove = NOMOVE;
-    for (var depth = 1; depth <= 4; depth++) {
-      AlphaBeta(-INFINITE, INFINITE, depth, BOOL.TRUE);
-      if (srch_stop == BOOL.TRUE) break;
-      GetPvLine(depth);
-      bestMove = brd_PvArray[0] || bestMove;
-    }
+      // Shallow search (max depth 4)
+      var bestMove = NOMOVE;
+      for (var depth = 1; depth <= 4; depth++) {
+        AlphaBeta(-INFINITE, INFINITE, depth, BOOL.TRUE);
+        if (srch_stop == BOOL.TRUE) break;
+        GetPvLine(depth);
+        bestMove = brd_PvArray[0] || bestMove;
+      }
 
-    srch_thinking = savedThinking;
-    brd_ply = 0;
+      srch_thinking = savedThinking;
+      brd_ply = 0;
 
-    if (bestMove && bestMove != NOMOVE) {
-      var from = FROMSQ(bestMove);
-      var to = TOSQ(bestMove);
-      addHintDot(from);
-      addHintDot(to);
-      $("#HintDisplay").text(PrMove(bestMove));
+      if (bestMove && bestMove != NOMOVE) {
+        var from = FROMSQ(bestMove);
+        var to = TOSQ(bestMove);
+        addHintDot(from);
+        addHintDot(to);
+        $("#HintDisplay").text(PrMove(bestMove));
+      }
+    } catch(e) {
+      console.log('Hint search error:', e);
+      brd_ply = 0;
+      srch_thinking = BOOL.FALSE;
     }
   }, 150);
 }
@@ -814,8 +820,8 @@ $("#HintsToggle").change(function() {
   }
 });
 
-// Initialize on page load
-$(document).ready(function() {
+// restoreGame is called from main.js AFTER init() completes
+function restoreGame() {
   updatePlayerSelectors();
   updateGameModeUI();
 
@@ -862,5 +868,7 @@ $(document).ready(function() {
     updatePlayerInfo();
     showHint();
     console.log("Game restored from auto-save");
+    return true;
   }
-});
+  return false;
+}

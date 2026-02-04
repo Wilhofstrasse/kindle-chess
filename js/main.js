@@ -4,8 +4,8 @@ $(function () {
   init();
   $("#fenIn").val(START_FEN);
 
-  // Only start new game if no saved game to restore
-  if (!GameSaver.hasSavedGame()) {
+  // Restore saved game or start new (must run AFTER init)
+  if (!restoreGame()) {
     NewGame();
     newGameAjax();
   }
