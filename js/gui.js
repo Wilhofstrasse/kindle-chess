@@ -734,6 +734,7 @@ function showHint() {
     for (var depth = 1; depth <= 4; depth++) {
       AlphaBeta(-INFINITE, INFINITE, depth, BOOL.TRUE);
       if (srch_stop == BOOL.TRUE) break;
+      GetPvLine(depth);
       bestMove = brd_PvArray[0] || bestMove;
     }
 

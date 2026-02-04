@@ -3,8 +3,12 @@ $(document).ajaxComplete(function () {});
 $(function () {
   init();
   $("#fenIn").val(START_FEN);
-  NewGame();
-  newGameAjax();
+
+  // Only start new game if no saved game to restore
+  if (!GameSaver.hasSavedGame()) {
+    NewGame();
+    newGameAjax();
+  }
 
   // $.ajax({
   // 	url : "bookXml.xml",
