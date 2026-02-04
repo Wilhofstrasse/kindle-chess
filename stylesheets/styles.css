@@ -41,6 +41,33 @@ body {
 	background-color: #216778;
 }
 
+.HintFrom {
+	background-color: #7fbf7f !important;
+}
+
+.HintTo {
+	background-color: #4da64d !important;
+}
+
+/* Board coordinates */
+.coord {
+	position: absolute;
+	font-size: 9px;
+	color: #333;
+	font-weight: bold;
+	pointer-events: none;
+}
+
+.coord-rank {
+	top: 1px;
+	left: 2px;
+}
+
+.coord-file {
+	bottom: 1px;
+	right: 2px;
+}
+
 /* Controls - full width rows */
 #Controls {
 	margin: 4px auto;

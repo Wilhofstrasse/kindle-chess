@@ -280,6 +280,7 @@ function PreSearch() {
 function MakeUserMove() {
   if (UserMove.from != SQUARES.NO_SQ && UserMove.to != SQUARES.NO_SQ) {
     console.log("User Move:" + PrSq(UserMove.from) + PrSq(UserMove.to));
+    clearHintHighlight();
 
     var parsed = ParseMove(UserMove.from, UserMove.to);
 
@@ -579,6 +580,7 @@ function initBoardSquares() {
   var divString;
   var lightString;
   var lastLight = 0;
+  var fileLetters = ['a','b','c','d','e','f','g','h'];
 
   for (rankIter = RANKS.RANK_8; rankIter >= RANKS.RANK_1; rankIter--) {
     light = lastLight ^ 1;
@@ -588,6 +590,17 @@ function initBoardSquares() {
       fileName = "file" + (fileIter + 1);
       if (light == 0) lightString = "Light";
       else lightString = "Dark";
+
+      var label = '';
+      // Rank numbers on left edge (file A)
+      if (fileIter == FILES.FILE_A) {
+        label += '<span class="coord coord-rank">' + (rankIter + 1) + '</span>';
+      }
+      // File letters on bottom edge (rank 1)
+      if (rankIter == RANKS.RANK_1) {
+        label += '<span class="coord coord-file">' + fileLetters[fileIter] + '</span>';
+      }
+
       divString =
         '<div class="Square clickElement ' +
         rankName +
@@ -595,8 +608,7 @@ function initBoardSquares() {
         fileName +
         " " +
         lightString +
-        '"/>';
-      //console.log(divString);
+        '">' + label + '</div>';
       light ^= 1;
       $("#Board").append(divString);
     }
@@ -653,7 +665,36 @@ function SetInitialBoardPieces() {
 }
 
 // === HINT FEATURE ===
+function clearHintHighlight() {
+  $(".Square").removeClass("HintFrom HintTo");
+}
+
+function highlightHintSquares(from, to) {
+  clearHintHighlight();
+
+  var fromFlipped = from;
+  var toFlipped = to;
+  if (GameController.BoardFlipped == BOOL.TRUE) {
+    fromFlipped = MIRROR120(from);
+    toFlipped = MIRROR120(to);
+  }
+
+  $(".Square").each(function () {
+    var sqRank = 7 - Math.round($(this).position().top / SQ_SIZE);
+    var sqFile = Math.round($(this).position().left / SQ_SIZE);
+
+    if (RanksBrd[fromFlipped] == sqRank && FilesBrd[fromFlipped] == sqFile) {
+      $(this).addClass("HintFrom");
+    }
+    if (RanksBrd[toFlipped] == sqRank && FilesBrd[toFlipped] == sqFile) {
+      $(this).addClass("HintTo");
+    }
+  });
+}
+
 function showHint() {
+  clearHintHighlight();
+
   if (!$("#HintsToggle").is(":checked") || GameController.GameOver == BOOL.TRUE) {
     $("#HintDisplay").text("");
     return;
@@ -661,13 +702,12 @@ function showHint() {
 
   // Quick search to find best move
   var oldTime = srch_time;
-  srch_time = 200;  // Quick 0.2s search for hint
-  srch_start = $.now();  // Set start time for search
+  srch_time = 200;
+  srch_start = $.now();
   srch_stop = BOOL.FALSE;
   srch_depth = 4;
   brd_ply = 0;
 
-  // Run a shallow search
   var bestMove = NOMOVE;
   for (var depth = 1; depth <= 4; depth++) {
     AlphaBeta(-INFINITE, INFINITE, depth, BOOL.TRUE);
@@ -678,7 +718,10 @@ function showHint() {
   srch_time = oldTime;
 
   if (bestMove && bestMove != NOMOVE) {
-    $("#HintDisplay").text("Try: " + PrMove(bestMove));
+    var from = FROMSQ(bestMove);
+    var to = TOSQ(bestMove);
+    highlightHintSquares(from, to);
+    $("#HintDisplay").text(PrMove(bestMove));
   } else {
     $("#HintDisplay").text("");
   }
