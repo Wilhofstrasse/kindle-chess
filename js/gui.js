@@ -517,6 +517,7 @@ $("#TakeButton").click(function () {
     brd_ply = 0;
     SetInitialBoardPieces();
     $("#currentFenSpan").text(BoardToFen());
+    showHint();
   }
 });
 
@@ -556,6 +557,7 @@ function NewGame() {
 
   updatePlayerInfo();
   CheckAndSet();
+  showHint();
 }
 
 $("#NewGameButton").click(function () {
@@ -694,38 +696,33 @@ function addHintDot(sq) {
 
 function showHint() {
   clearHintHighlight();
+  $("#HintDisplay").text("");
 
   if (!$("#HintsToggle").is(":checked") || GameController.GameOver == BOOL.TRUE) {
-    $("#HintDisplay").text("");
     return;
   }
 
-  // Quick search to find best move
-  var oldTime = srch_time;
-  srch_time = 200;
-  srch_start = $.now();
-  srch_stop = BOOL.FALSE;
-  srch_depth = 4;
-  brd_ply = 0;
+  // Use a timeout so the board renders first, then compute hint
+  setTimeout(function() {
+    // Full reset of search state
+    ClearForSearch();
+    srch_time = 300;
+    srch_depth = MAXDEPTH;
 
-  var bestMove = NOMOVE;
-  for (var depth = 1; depth <= 4; depth++) {
-    AlphaBeta(-INFINITE, INFINITE, depth, BOOL.TRUE);
-    if (srch_stop == BOOL.TRUE) break;
-    bestMove = brd_PvArray[0];
-  }
+    // Search from current position (player's perspective)
+    SearchPosition();
 
-  srch_time = oldTime;
+    var bestMove = srch_best;
+    srch_thinking = BOOL.FALSE;  // Reset thinking flag
 
-  if (bestMove && bestMove != NOMOVE) {
-    var from = FROMSQ(bestMove);
-    var to = TOSQ(bestMove);
-    addHintDot(from);
-    addHintDot(to);
-    $("#HintDisplay").text(PrMove(bestMove));
-  } else {
-    $("#HintDisplay").text("");
-  }
+    if (bestMove && bestMove != NOMOVE) {
+      var from = FROMSQ(bestMove);
+      var to = TOSQ(bestMove);
+      addHintDot(from);
+      addHintDot(to);
+      $("#HintDisplay").text(PrMove(bestMove));
+    }
+  }, 100);
 }
 
 // === PLAYER MANAGEMENT UI ===
